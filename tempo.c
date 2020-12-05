@@ -7,7 +7,7 @@
 /* Data da Última Modificação: 26/11/2020                             */
 /* Descrição: Nosso primeiro programa de simulação. Vamos simular N   */
 /* nodos, cada um conta o "tempo" independentemente. Um Exemplo       */
-/* simples e significativo para captar o "espírito" da simulação      */
+/* simples e significativo para captar o "espírito" da simulação.     */
 /*                                                                    */
 /**********************************************************************/
 
