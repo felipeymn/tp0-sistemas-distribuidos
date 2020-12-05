@@ -29,6 +29,25 @@ typedef struct {
 
 TipoProcesso *processo;
 
+/* log_header(int n)
+   n: numero de processos na execução
+ * Imprime o cabeçalho inicial para o log do programa */
+void log_header(int n) {
+  printf("**********************************************************\n");
+  printf("*                Início do Log - tempo.c                 *\n");
+  printf("**********************************************************\n");
+  printf("*  Número de processos: %d                                *\n", n);
+  printf("**********************************************************\n\n");
+}
+
+/* log_footer()
+ * Imprime o rodapé final para o log do programa */
+void log_footer() {
+  printf("\n**********************************************************\n");
+  printf("*                Fim do Log - tempo.c                    *\n");
+  printf("**********************************************************\n");
+}
+
 int main(int argc, char *argv[]) {
   static int N;      // número de processos
   static int token;  // indica o processo que está executando
@@ -45,6 +64,7 @@ int main(int argc, char *argv[]) {
   smpl(0, "Um Exemplo de Simulação");
   reset();
   stream(1);
+  log_header(N);
 
   // inicializar processos
   processo = (TipoProcesso *)malloc(sizeof(TipoProcesso) * N);
@@ -77,7 +97,7 @@ int main(int argc, char *argv[]) {
         if (status(processo[token].id) != 0) {
           break;
         }
-        printf("[INFO] O processo %d vai testar no tempo %4.1f\n", token,
+        printf(" [INFO] O processo %d vai testar no tempo %4.1f\n", token,
                time());
         schedule(test, 30.0, token);
         break;
@@ -85,19 +105,20 @@ int main(int argc, char *argv[]) {
         // reserva a facility, configura o status como diferente de 0
         r = request(processo[token].id, token, 0);
         if (r != 0) {
-          puts("[ERROR] Não foi possível falhar o processo.");
+          puts(" [ERROR] Não foi possível falhar o processo.");
           exit(1);
         }
-        printf("[INFO] O processo %d falhou no tempo %4.1f\n", token, time());
+        printf(" [INFO] O processo %d falhou no tempo %4.1f\n", token, time());
         break;
       case recovery:
         // libera a facility, configura o status novamente como 0
         release(processo[token].id, token);
-        printf("[INFO] O processo %d recuperou no tempo %4.1f\n", token,
+        printf(" [INFO] O processo %d recuperou no tempo %4.1f\n", token,
                time());
         schedule(test, 30.0, token);
         break;
     }
   }
+  log_footer();
   return 0;
 }
