@@ -34,7 +34,7 @@ TipoProcesso *processo;
  * Imprime o cabeçalho inicial para o log do programa */
 void log_header(int n) {
   printf("**********************************************************\n");
-  printf("*                Início do Log - tempo.c                 *\n");
+  printf("*                Início do Log - tarefa1.c               *\n");
   printf("**********************************************************\n");
   printf("*  Número de processos: %d                                *\n", n);
   printf("**********************************************************\n\n");
@@ -44,7 +44,7 @@ void log_header(int n) {
  * Imprime o rodapé final para o log do programa */
 void log_footer() {
   printf("\n**********************************************************\n");
-  printf("*                Fim do Log - tempo.c                    *\n");
+  printf("*                Fim do Log - tarefa1.c                  *\n");
   printf("**********************************************************\n");
 }
 
@@ -53,7 +53,7 @@ int main(int argc, char *argv[]) {
   static int token;  // indica o processo que está executando
   static int event, r, i;
   static char fa_name[5];
-
+  static int next;
   if (argc != 2) {
     puts("Uso correto: tempo <número de processos>");
     exit(1);
@@ -97,14 +97,15 @@ int main(int argc, char *argv[]) {
         if (status(processo[token].id) != 0) {
           break;
         }
-        printf("%4.1f\t[INFO] O processo %d vai iniciar os testes\n", time(),
+        printf("%4.1f\t[INFO]  O processo %d vai iniciar os testes\n", time(),
                token);
-        if (status(processo[token + 1].id) != 0) {
-          printf("%4.1f\t[TEST] Processo %d -> Processo %d: FALHA\n", time(),
-                 token, (token + 1) % N);
+        next = (token + 1) % N;
+        if (status(processo[next].id) != 0) {
+          printf("%4.1f\t[TEST]  Processo %d -> Processo %d: FALHA\n", time(),
+                 token, next);
         } else {
-          printf("%4.1f\t[TEST] Processo %d -> Processo %d: SUCESSO\n", time(),
-                 token, (token + 1) % N);
+          printf("%4.1f\t[TEST]  Processo %d -> Processo %d: SUCESSO\n", time(),
+                 token, next);
         }
         schedule(test, 30.0, token);
         break;
@@ -115,12 +116,12 @@ int main(int argc, char *argv[]) {
           puts("%4.1f\t[ERROR] Não foi possível falhar o processo.");
           exit(1);
         }
-        printf("%4.1f\t[INFO] O processo %d falhou\n", time(), token);
+        printf("%4.1f\t[EVENT] O processo %d falhou\n", time(), token);
         break;
       case recovery:
         // libera a facility, configura o status novamente como 0
         release(processo[token].id, token);
-        printf("%4.1f\t[INFO] O processo %d se recuperou\n", time(), token);
+        printf("%4.1f\t[EVENT] O processo %d se recuperou\n", time(), token);
         schedule(test, 30.0, token);
         break;
     }
